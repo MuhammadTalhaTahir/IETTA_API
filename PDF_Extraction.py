@@ -1,11 +1,14 @@
 from tika import parser
-import datetime, os
+import datetime, os, json
 
 class pdfToTextConverter:
     def __init__(self,fileName = None) -> None:
         self.fileName = fileName
         self.parsed = None 
+        self.__storingLocation = "./userFiles/"
         self.__OpenFile()
+        if not os.path.isdir(self.__storingLocation):
+            os.makedirs(self.__storingLocation)
         self.fileName = self.fileName[:len(self.fileName)-4]
 
     
@@ -32,14 +35,14 @@ class pdfToTextConverter:
 
     def convertToText(self):
         try:
-            with open(self.fileName+".txt",'w', encoding="utf-8") as file:
-                file.write(self.ParseContent())
-            with open('metaData-'+self.fileName+".txt",'w', encoding="utf-8") as file:
-                file.write(str(self.ParseMetaData()))
+            with open(self.__storingLocation+self.fileName+".txt",'w', encoding="utf-8") as file:
+                file.write(self.ParseContent().lstrip())
+            with open(self.__storingLocation+'metaData-'+self.fileName+".json",'w', encoding="utf-8") as file:
+                file.write(json.dumps(self.ParseMetaData()))
             os.remove(self.fileName+".pdf")
         except Exception as e:
             print(e)
 
 
 
-pdfToTextConverter("sampleFile.pdf").convertToText()
+pdfToTextConverter("testFile.pdf").convertToText()
