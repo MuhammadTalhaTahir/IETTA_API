@@ -6,6 +6,8 @@ class pdfToTextConverter:
         self.fileName = fileName
         self.parsed = None 
         self.__OpenFile()
+        self.fileName = self.fileName[:len(self.fileName)-4]
+
     
     def __OpenFile(self) -> None:
         try:
@@ -30,11 +32,11 @@ class pdfToTextConverter:
 
     def convertToText(self):
         try:
-            with open(self.fileName,'w', encoding="utf-8") as file:
+            with open(self.fileName+".txt",'w', encoding="utf-8") as file:
                 file.write(self.ParseContent())
-            with open(self.fileName + '-metaData') as file:
-                file.write(self.ParseMetaData())
-            os.remove(self.fileName)
+            with open('metaData-'+self.fileName+".txt",'w', encoding="utf-8") as file:
+                file.write(str(self.ParseMetaData()))
+            os.remove(self.fileName+".pdf")
         except Exception as e:
             print(e)
 
